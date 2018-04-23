@@ -1,5 +1,7 @@
 package spgroup;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +28,21 @@ public class UserStory {
 	@Autowired
 	private TestRestTemplate template;
 	@Test
-	public void exampleTest() {
+	public void story1() {
 		Gson gson = new Gson();
 	    String json = "{\"friends\":[\"andy@example.com\",\"john@example.com\"]}";
 	    FriendRequest friendReq= gson.fromJson(json, FriendRequest.class);
 	    System.out.println("friendReq:"+friendReq);
-	    FriendResponse result = this.template.postForObject("/api/people/befriend", friendReq, FriendResponse.class);
-	    System.out.println("response: "+result);
+	    //FriendResponse result = this.template.postForObject("/api/people/befriend", friendReq, FriendResponse.class);
+	    //assertEquals("return must be true", true, result.isSuccess());
+	    
+	    String jsonResponse = this.template.postForObject("/api/people/befriend", friendReq, String.class);
+	    assertEquals("return must be true", "{\"success\":true}", jsonResponse);
 	}
+	@Test
+	public void story2() {
+		String jsonResponse = this.template.getForObject("/api/people/john@example.com", String.class);
+	    assertEquals("return must be true", "{\"friends\":[\"andy@example.com\"],\"success\":true,\"count\":1}", jsonResponse);
+	}
+	
 }
