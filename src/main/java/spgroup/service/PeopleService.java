@@ -27,29 +27,35 @@ public class PeopleService {
 
 	public FriendResponse createFriend(FriendRequest friendReq) {
 		log.debug("friendReq: {}", friendReq);
+		String error="";
 		FriendResponse res = new FriendResponse();
 		// -1 last user already friend of others
 		for (int i = 0; i < friendReq.getFriends().size() - 1; i++) {
 			String main = friendReq.getFriends().get(i);
 			People mainPeople = this.findPeople(main);
-			System.out.println("mainPeople:" + mainPeople);
-			if(mainPeople==null)
-				return res;
+			if(mainPeople==null) {
+				error = error+main+" - not found.";
+			}
 			// i+1 skip main him self
 			for (int j = i + 1; j < friendReq.getFriends().size(); j++) {
 				String other = friendReq.getFriends().get(j);
 				if(!mainPeople.getFriends().contains(other)) {
-					System.out.println("email: " + other);
+					
 					People otherPeople = this.findPeople(other);
 					if (otherPeople == null) {
-						//default is res.setSuccess(false);
+						error = error+other +" - not found.";
 					} else {
 						mainPeople.getFriends().add(other);
 						otherPeople.getFriends().add(main);
-						res.setSuccess(true);
 					}
+				}else {
+					error = error+main+"&"+other+" are already friend.";
 				}
 			}
+		}
+		res.setMessage(error);
+		if(error.isEmpty()) {
+			res.setSuccess(true);
 		}
 		return res;
 	}
