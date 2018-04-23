@@ -1,6 +1,9 @@
 package spgroup.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +20,7 @@ public class PeopleService {
 
 	static {
 		peoples = new HashMap<String, People>();
-		String[] emails = { "yongqiang.j.zhu@gmail.com", "batman@wyn.com", "andy@example.com", "john@example.com" };
+		String[] emails = { "yongqiang.j.zhu@gmail.com", "common@example.com", "andy@example.com", "john@example.com" };
 		for (String email : emails) {
 			People tmp = new People();
 			tmp.setEmail(email);
@@ -62,5 +65,18 @@ public class PeopleService {
 
 	public People findPeople(String email) {
 		return peoples.get(email);
+	}
+	
+	public List<String> findCommonFriend(People user1,People user2) {
+		
+		List<String> result = new ArrayList<String>();
+		HashSet<String> user1Index= new HashSet<String>(user1.getFriends());
+		for(String friend:user2.getFriends()) {
+			if(user1Index.contains(friend)) {
+				result.add(friend);
+			}
+		}
+		return result;
+		
 	}
 }

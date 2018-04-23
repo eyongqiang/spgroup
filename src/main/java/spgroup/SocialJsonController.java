@@ -1,5 +1,7 @@
 package spgroup;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +33,21 @@ public class SocialJsonController {
 			res.setSuccess(true);
 		}else {
 			res.setMessage(email+" is not found.");
+		}
+        return res;
+    }
+	@RequestMapping(value="/people/common/friend/{email1}/{email2}",method=RequestMethod.GET)
+    public FriendResponse commonFriend( @PathVariable String email1,@PathVariable String email2) {
+		FriendResponse res = new FriendResponse();
+		People user1 = peopleService.findPeople(email1);
+		People user2 = peopleService.findPeople(email2);
+		List<String> friends = peopleService.findCommonFriend(user1,user2);
+		if(friends!=null) {
+			res.setFriends(friends);
+			res.setSuccess(true);
+		}else {
+			res.setMessage("no common friend or email not found.");
+			res.setSuccess(true);
 		}
         return res;
     }
