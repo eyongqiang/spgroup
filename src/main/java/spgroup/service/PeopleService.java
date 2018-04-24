@@ -62,8 +62,16 @@ public class PeopleService {
 					if (otherPeople == null) {
 						error = error+other +" - not found.";
 					} else {
-						mainPeople.getFriends().add(other);
-						otherPeople.getFriends().add(main);
+						if(!otherPeople.getBlocker().contains(mainPeople.getEmail())
+								&&
+								!mainPeople.getBlocker().contains(otherPeople.getEmail())
+								) {
+							mainPeople.getFriends().add(other);
+							otherPeople.getFriends().add(main);
+							
+						}else {
+							error= error+main+"&"+other+" are denied to be friend.";
+						}
 					}
 				}else {
 					error = error+main+"&"+other+" are already friend.";
