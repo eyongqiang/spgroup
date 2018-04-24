@@ -8,6 +8,19 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_EMPTY)
 public class FriendResponse {
+	private List<String> recipients = new ArrayList<String>();
+	public List<String> getRecipients() {
+		int result = this.recipients.size();
+		if(result>0) {
+			return this.recipients;
+		}else {
+			return null;
+		}
+	}
+	public void setRecipients(List<String> recipients) {
+		this.recipients = recipients;
+	}
+
 	private List<String> friends = new ArrayList<String>();
 	private String message;
 	private boolean success=false;

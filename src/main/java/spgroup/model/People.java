@@ -7,6 +7,14 @@ public class People {
 	private String email;
 	private List<String> friends = new ArrayList<String>();
 	private List<String> subscriber = new ArrayList<String>();
+	private List<String> blocker = new ArrayList<String>();
+
+	public List<String> getBlocker() {
+		return blocker;
+	}
+	public void setBlocker(List<String> blocker) {
+		this.blocker = blocker;
+	}
 	public String getEmail() {
 		return email;
 	}
@@ -27,7 +35,8 @@ public class People {
 	}
 	@Override
 	public String toString() {
-		return "People [email=" + email + ", friends=" + friends + ", subscriber=" + subscriber + "]";
+		return "People [email=" + email + ", friends=" + friends + ", subscriber=" + subscriber + ", blocker=" + blocker
+				+ "]";
 	}
 	
 }

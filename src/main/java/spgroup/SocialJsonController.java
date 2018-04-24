@@ -55,12 +55,12 @@ public class SocialJsonController {
     public FriendResponse subscribe(@RequestBody FriendRequest friendReq) {
 		return this.peopleService.addSubscriber(friendReq);
 	}
-	@RequestMapping(value="/block/{requstor}/{target}",method=RequestMethod.GET)
-    public FriendResponse block( @PathVariable String requstor,@PathVariable String target) {
-		return null;
+	@RequestMapping(value="/block",method=RequestMethod.POST)
+    public FriendResponse block( @RequestBody FriendRequest friendReq) {
+		return this.peopleService.block(friendReq);
 	}
-	@RequestMapping(value="/message/{requstor}/{target}",method=RequestMethod.POST)
-    public FriendResponse sendMessage( @PathVariable String sender,@PathVariable String text) {
-		return null;
+	@RequestMapping(value="/send",method=RequestMethod.POST)
+    public FriendResponse sendMessage( @RequestBody FriendRequest friendReq) {
+		return this.peopleService.sendMessage(friendReq);
 	}
 }

@@ -1,9 +1,14 @@
 package spgroup.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +21,20 @@ import spgroup.model.People;
 @Service
 public class PeopleService {
 	private static Logger log = LoggerFactory.getLogger(PeopleService.class);
-	static HashMap<String, People> peoples;
-
+	//TODO: it can be used cache in future
+	protected static HashMap<String, People> peoples;
+	public static void displayCache(){
+		Iterator it = PeopleService.peoples.entrySet().iterator();
+		System.out.println("============================\\/");
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	        System.out.println(pair.getKey() + " = " + ((People)pair.getValue()));
+	    }
+	    System.out.println("============================/\\");
+	}
 	static {
 		peoples = new HashMap<String, People>();
-		String[] emails = { "yongqiang.j.zhu@gmail.com", "common@example.com", "andy@example.com", "john@example.com" };
+		String[] emails = { "yongqiang.j.zhu@gmail.com", "common@example.com", "andy@example.com", "john@example.com","lisa@example.com","kate@example.com" };
 		for (String email : emails) {
 			People tmp = new People();
 			tmp.setEmail(email);
@@ -103,6 +117,62 @@ public class PeopleService {
 		}else {
 			res.setMessage("Either requstor or target are not exist");
 		}
+		return res;
+	}
+
+	public FriendResponse block(FriendRequest friendReq) {
+		FriendResponse res = new FriendResponse();
+		People target = this.findPeople(friendReq.getTarget());
+		People requstor = this.findPeople(friendReq.getRequestor());
+		if(target!=null && requstor!=null) {
+			requstor.getBlocker().add(target.getEmail());
+			res.setSuccess(true);
+		}else {
+			res.setMessage("Either requstor or target are not exist");
+		}
+		return res;
+	}
+
+	public FriendResponse sendMessage(FriendRequest friendReq) {
+		FriendResponse res = new FriendResponse();
+		String text = friendReq.getText();
+		if(friendReq.getSender()!=null && !friendReq.getSender().isEmpty()
+				&& text!=null && !text.isEmpty()) {
+			People sender = this.findPeople(friendReq.getSender());
+			if(sender!=null) {
+				List<String> recipients = new ArrayList<String>();
+				//get all friend
+				recipients.addAll(sender.getFriends());
+				//get all subscriber
+				recipients.addAll(sender.getSubscriber());
+				//if above choice to block sender
+				//TODO: when use database, change below
+				List<String> whomBlock = new ArrayList<String>();
+				for(String recipient:recipients) {
+					People p = this.findPeople(recipient);
+					System.out.println("recipient-->"+recipient+" is blocked "+sender.getEmail());
+					if(p.getBlocker().contains(sender.getEmail())) {
+						whomBlock.add(recipient);
+					}
+					
+				}
+				//get mention
+				Matcher mention = Pattern.compile("[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+").matcher(text);
+				while (mention.find()) {
+					recipients.add(mention.group());
+			    }
+				//check if recipient are listed in blocked
+				recipients.removeAll(sender.getBlocker());
+				recipients.removeAll(whomBlock);
+				res.setRecipients(recipients);
+				res.setSuccess(true);
+			}else {
+				res.setMessage("Sender is not found.");
+			}
+		}else {
+			res.setMessage("Either Sender or Text are not given.");
+		}
+		
 		return res;
 	}
 }
