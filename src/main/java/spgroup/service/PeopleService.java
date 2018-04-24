@@ -79,4 +79,30 @@ public class PeopleService {
 		return result;
 		
 	}
+
+	public FriendResponse addSubscriber(String requstor, String target) {
+		FriendResponse res = new FriendResponse();
+		People req = this.findPeople(requstor);
+		People sub = this.findPeople(target);
+		if(req!=null&&sub!=null) {
+			req.getSubscriber().add(target);
+			res.setSuccess(true);
+		}else {
+			res.setMessage("Either requestor or target not exist");
+		}
+		return res;
+	}
+
+	public FriendResponse addSubscriber(FriendRequest friendReq) {
+		FriendResponse res = new FriendResponse();
+		People target = this.findPeople(friendReq.getTarget());
+		String requstor = friendReq.getRequestor();
+		if(target!=null && this.findPeople(requstor)!=null) {
+			target.getSubscriber().add(requstor);
+			res.setSuccess(true);
+		}else {
+			res.setMessage("Either requstor or target are not exist");
+		}
+		return res;
+	}
 }

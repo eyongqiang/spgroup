@@ -25,7 +25,7 @@ public class SocialJsonController {
         return peopleService.createFriend(friendReq);
     }
 	@RequestMapping(value="/people/{email}",method=RequestMethod.GET)
-    public FriendResponse beFriend( @PathVariable String email) {
+    public FriendResponse listFriend( @PathVariable String email) {
 		FriendResponse res = new FriendResponse();
 		People p = peopleService.findPeople(email);
 		if(p!=null) {
@@ -51,4 +51,16 @@ public class SocialJsonController {
 		}
         return res;
     }
+	@RequestMapping(value="/subscribe",method=RequestMethod.POST)
+    public FriendResponse subscribe(@RequestBody FriendRequest friendReq) {
+		return this.peopleService.addSubscriber(friendReq);
+	}
+	@RequestMapping(value="/block/{requstor}/{target}",method=RequestMethod.GET)
+    public FriendResponse block( @PathVariable String requstor,@PathVariable String target) {
+		return null;
+	}
+	@RequestMapping(value="/message/{requstor}/{target}",method=RequestMethod.POST)
+    public FriendResponse sendMessage( @PathVariable String sender,@PathVariable String text) {
+		return null;
+	}
 }

@@ -64,5 +64,14 @@ public class UserStory {
 		assertEquals("return must be true", "{\"friends\":[\"common@example.com\"],\"success\":true,\"count\":1}",
 				jsonResponse);
 	}
-
+	@Test
+	public void story4() {
+		
+		String json = "{\"requestor\": \"andy@example.com\",\"target\": \"john@example.com\"}";
+		Gson gson = new Gson();
+		FriendRequest friendReq = gson.fromJson(json, FriendRequest.class);
+		String jsonResponse = this.template.postForObject("/api/subscribe", friendReq, String.class);
+		System.out.println("jsonResponse:" + jsonResponse);
+		assertEquals("return must be true", "{\"success\":true}", jsonResponse);
+	}
 }
